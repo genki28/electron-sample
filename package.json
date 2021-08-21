@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "yarn build && electron ./index.js"
+    "start": "tsc && electron ./index.js",
+    "electron": "electron ./index.js"
   }
 }

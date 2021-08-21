@@ -1,12 +1,16 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var electron_1 = require("electron");
-var html = '<html><head>'
-    + '<title>HTML STRING</title>'
-    + '</head><body>'
-    + '<h1>HTML STRING</h1>'
-    + '<p>This is string content .</p>'
-    + '</body></html>';
+var path_1 = __importDefault(require("path"));
+// const html = '<html><head>'
+//   + '<title>HTML STRING</title>'
+//   + '</head><body>'
+//   + '<h1>HTML STRING</h1>'
+//   + '<p>This is string content .</p>'
+//   + '</body></html>';
 // const createWindow = () => {
 //   var fn = (event: any) => {
 //     console.log("focus: " + event.sender.id)
@@ -144,11 +148,13 @@ var html = '<html><head>'
 // レインダラープロセスからBrowserWindowを使用
 var createWindow = function () {
     var win = new electron_1.BrowserWindow({
-        width: 500,
-        height: 500,
+        width: 1000,
+        height: 900,
         webPreferences: {
-            nodeIntegration: true,
+            // nodeIntegration: true, // これはtrueにしない方が良いらしい。セキュリティの観点から
             enableRemoteModule: true,
+            preload: path_1.default.join(electron_1.app.getAppPath(), 'preload.js'),
+            contextIsolation: false // TODO: なんかこれもいるみたい！
         }
     });
     win.loadFile("index.html");
@@ -232,18 +238,18 @@ var createMenu = function () {
     electron_1.Menu.setApplicationMenu(menu);
 };
 createMenu();
-electron_1.app.prependOnceListener("browser-window-created", function () {
-    console.log("browser-window-created");
-});
-electron_1.app.on("web-contents-created", function () {
-    console.log("web-contents-created");
-});
+// app.prependOnceListener("browser-window-created", () => {
+//   console.log("browser-window-created");
+// })
+// app.on("web-contents-created", () => {
+//   console.log("web-contents-created");
+// })
 electron_1.app.whenReady().then(createWindow);
-electron_1.app.on("will-finish-launching", function () {
-    console.log("will-finish-launching");
-});
-electron_1.app.on("window-all-closed", function () {
-    if (process.platform !== "darwin") {
-        electron_1.app.quit();
-    }
-});
+// app.on("will-finish-launching", () => {
+//   console.log("will-finish-launching")
+// })
+// app.on("window-all-closed", () => {
+//   if (process.platform !== "darwin") {
+//     app.quit();
+//   }
+// })

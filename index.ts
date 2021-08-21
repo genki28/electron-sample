@@ -2,12 +2,12 @@ import { app, BrowserView, BrowserWindow, Menu, ipcMain } from "electron";
 import { MenuItem } from "electron/main";
 import path from "path";
 
-const html = '<html><head>'
-  + '<title>HTML STRING</title>'
-  + '</head><body>'
-  + '<h1>HTML STRING</h1>'
-  + '<p>This is string content .</p>'
-  + '</body></html>';
+// const html = '<html><head>'
+//   + '<title>HTML STRING</title>'
+//   + '</head><body>'
+//   + '<h1>HTML STRING</h1>'
+//   + '<p>This is string content .</p>'
+//   + '</body></html>';
 
 // const createWindow = () => {
 //   var fn = (event: any) => {
@@ -31,7 +31,7 @@ const html = '<html><head>'
 //   //   win.show();
 //   // })
 //   // win.on("show", () => {
-    
+
 //   // })
 //   win.on("focus", fn);
 //   win.webContents.openDevTools();
@@ -161,11 +161,13 @@ const html = '<html><head>'
 
 const createWindow = () => {
   let win = new BrowserWindow({
-    width: 500,
-    height: 500,
+    width: 1000,
+    height: 900,
     webPreferences: {
-      nodeIntegration: true,
+      // nodeIntegration: true, // これはtrueにしない方が良いらしい。セキュリティの観点から
       enableRemoteModule: true,
+      preload: path.join(app.getAppPath(), 'preload.js'),
+      contextIsolation: false // TODO: なんかこれもいるみたい！
     }
   });
   win.loadFile("index.html");
@@ -260,21 +262,21 @@ const createMenu = () => {
 
 createMenu();
 
-app.prependOnceListener("browser-window-created", () => {
-  console.log("browser-window-created");
-})
+// app.prependOnceListener("browser-window-created", () => {
+//   console.log("browser-window-created");
+// })
 
-app.on("web-contents-created", () => {
-  console.log("web-contents-created");
-})
+// app.on("web-contents-created", () => {
+//   console.log("web-contents-created");
+// })
 
 app.whenReady().then(createWindow);
-app.on("will-finish-launching", () => {
-  console.log("will-finish-launching")
-})
+// app.on("will-finish-launching", () => {
+//   console.log("will-finish-launching")
+// })
 
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
-})
+// app.on("window-all-closed", () => {
+//   if (process.platform !== "darwin") {
+//     app.quit();
+//   }
+// })
