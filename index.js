@@ -146,6 +146,15 @@ var path_1 = __importDefault(require("path"));
 //   win.loadFile("index.html")
 // }
 // レインダラープロセスからBrowserWindowを使用
+var winName = [
+    "banana",
+    "orange",
+    "apple"
+];
+electron_1.ipcMain.on("hello", function (event) {
+    var result = createWindow();
+    event.reply("hello-result", winName[result % 3] + '-' + result);
+});
 var createWindow = function () {
     var win = new electron_1.BrowserWindow({
         width: 1000,
@@ -159,6 +168,7 @@ var createWindow = function () {
     });
     win.loadFile("index.html");
     win.webContents.openDevTools();
+    return win.id;
 };
 // データとファイルアクセス
 // const createWindow = () => {
@@ -182,6 +192,16 @@ var createWindow = function () {
 //   console.log("browser-window-blur: " + e.sender.id)
 //   console.log("event: " + e)
 // })
+electron_1.ipcMain.handle("hello", function (event, arg) {
+    var ws = electron_1.BrowserWindow.getAllWindows();
+    for (var n in ws) {
+        var w = ws[n];
+        if (w.id != arg) {
+            w.close();
+        }
+    }
+    return "only open id= " + arg;
+});
 var createMenu = function () {
     // let menu = new Menu();
     // let file = new MenuItem({
@@ -234,6 +254,7 @@ var createMenu = function () {
     //     ]
     //   }
     // ];
+    var countner = 0;
     var menuTemp = [
         {
             label: "File",
@@ -243,9 +264,23 @@ var createMenu = function () {
                         createWindow();
                     } },
                 { label: "Hello", click: function () {
-                        console.log("Hello menu.");
-                        var w = electron_1.BrowserWindow.getFocusedWindow();
-                        w === null || w === void 0 ? void 0 : w.webContents.executeJavaScript('hello()');
+                        console.log("hello");
+                        // const ws = BrowserWindow.getAllWindows();
+                        // let count = 1;
+                        // let dx = 100;
+                        // let dy = 100;
+                        // for (let n in ws) {
+                        //   let w = ws[n];
+                        //   w.setPosition(dx, dy);
+                        //   w.webContents.send("hello", "Window No, " + count++);
+                        //   dx += 150;
+                        //   dy += 50;
+                        // }
+                        // const w = BrowserWindow.getFocusedWindow();
+                        // w?.webContents.send("hello", 'message from app.(' + ++countner + " count)")
+                        // console.log("Hello menu.");
+                        // const w = BrowserWindow.getFocusedWindow();
+                        // w?.webContents.executeJavaScript('hello()');
                     } },
                 { role: "close" },
                 { type: "separator" },

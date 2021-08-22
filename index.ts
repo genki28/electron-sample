@@ -158,10 +158,17 @@ import path from "path";
 // }
 
 // レインダラープロセスからBrowserWindowを使用
+const winName = [
+  "banana",
+  "orange",
+  "apple"
+];
+ipcMain.on("hello", (event) => {
+  const result = createWindow();
+  event.reply("hello-result", winName[result % 3] + '-' + result)
+})
 
-
-
-const createWindow = () => {
+const createWindow = (): number => {
   let win = new BrowserWindow({
     width: 1000,
     height: 900,
@@ -174,6 +181,7 @@ const createWindow = () => {
   });
   win.loadFile("index.html");
   win.webContents.openDevTools();
+  return win.id;
 }
 
 // データとファイルアクセス
@@ -201,6 +209,17 @@ const createWindow = () => {
 //   console.log("browser-window-blur: " + e.sender.id)
 //   console.log("event: " + e)
 // })
+
+ipcMain.handle("hello", (event, arg) => {
+  let ws = BrowserWindow.getAllWindows();
+  for (let n in ws) {
+    let w = ws[n];
+    if (w.id != arg) {
+      w.close();
+    }
+  }
+  return "only open id= " + arg;
+})
 
 const createMenu = () => {
   // let menu = new Menu();
@@ -257,6 +276,7 @@ const createMenu = () => {
   //     ]
   //   }
   // ];
+  let countner = 0;
   let menuTemp: Electron.MenuItemConstructorOptions[] = [
     {
       label: "File",
@@ -266,9 +286,23 @@ const createMenu = () => {
           createWindow();
         }},
         {label: "Hello", click: () => {
-          console.log("Hello menu.");
-          const w = BrowserWindow.getFocusedWindow();
-          w?.webContents.executeJavaScript('hello()');
+          console.log("hello")
+          // const ws = BrowserWindow.getAllWindows();
+          // let count = 1;
+          // let dx = 100;
+          // let dy = 100;
+          // for (let n in ws) {
+          //   let w = ws[n];
+          //   w.setPosition(dx, dy);
+          //   w.webContents.send("hello", "Window No, " + count++);
+          //   dx += 150;
+          //   dy += 50;
+          // }
+          // const w = BrowserWindow.getFocusedWindow();
+          // w?.webContents.send("hello", 'message from app.(' + ++countner + " count)")
+          // console.log("Hello menu.");
+          // const w = BrowserWindow.getFocusedWindow();
+          // w?.webContents.executeJavaScript('hello()');
         }},
         {role: "close"},
         {type: "separator"},
