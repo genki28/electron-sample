@@ -159,6 +159,8 @@ import path from "path";
 
 // レインダラープロセスからBrowserWindowを使用
 
+
+
 const createWindow = () => {
   let win = new BrowserWindow({
     width: 1000,

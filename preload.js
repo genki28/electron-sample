@@ -5,6 +5,7 @@ const { remote, ipcRenderer } = require("electron");
 
 // // tsの場合、windowはどうなる？？
 window.remote = remote;
+window.MenuItem = remote.MenuItem;
 // window.dialog = dialog;
 // window.ipcRenderer = ipcRenderer;
 // window.fs = fs;

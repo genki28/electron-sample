@@ -34,28 +34,44 @@
     // const { BrowserWindow } = remote;
     const BrowserWindow = window.remote.BrowserWindow;
     const Menu = window.remote.Menu;
-    function doit () {
-      let win = remote.getCurrentWindow();
-      let menu_temp = [
-        {
-          label: "New Menu",
-          submenu: [
-            {label: "Hello", click: () => {
-              hello();
-            }},
-            {role: "close"},
-            {type: "separator"},
-            {role: "quit"}
-          ]
-        }
-      ];
-      let menu = Menu.buildFromTemplate(menu_temp);
-      Menu.setApplicationMenu(menu);
-      alert("Change menubar.")
-    }
-    function hello () {
-      alert("select menu " + remote.getCurrentWindow().id)
-    }
+    const MenuItem = window.MenuItem;
+
+    const menu = new Menu();
+    menu.append(new MenuItem({
+      label: "Hello", click(m, w) {
+        console.log("Hello menu.");
+        alert("hello! [id=" + w.id + "]")
+      }
+    }));
+    menu.append(new MenuItem({ type: "separator" }));
+    menu.append(new MenuItem({ role: "cut" }));
+    menu.append(new MenuItem({ role: "copy" }));
+    menu.append(new MenuItem({ role: "paste" }));
+    window.addEventListener("contextmenu", (e) => {
+      menu.popup({ window: remote.getCurrentWindow() });
+    }, false);
+    // function doit () {
+    //   let win = remote.getCurrentWindow();
+    //   let menu_temp = [
+    //     {
+    //       label: "New Menu",
+    //       submenu: [
+    //         {label: "Hello", click: () => {
+    //           hello();
+    //         }},
+    //         {role: "close"},
+    //         {type: "separator"},
+    //         {role: "quit"}
+    //       ]
+    //     }
+    //   ];
+    //   let menu = Menu.buildFromTemplate(menu_temp);
+    //   Menu.setApplicationMenu(menu);
+    //   alert("Change menubar.")
+    // }
+    // function hello () {
+    //   alert("select menu " + remote.getCurrentWindow().id)
+    // }
     // function doit () {
     //   let win = new BrowserWindow({
     //     width: 400,
