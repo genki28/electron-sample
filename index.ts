@@ -224,37 +224,57 @@ const createMenu = () => {
   // menu.append(edit);
 
   // Menu.setApplicationMenu(menu)
+  // let menuTemp: Electron.MenuItemConstructorOptions[] = [
+  //   {
+  //     label: "File",
+  //     submenu: [
+  //       { label: "New", click: () => {
+  //         console.log("New Menu");
+  //         createWindow();
+  //       }},
+  //       { label: "File", click: () => {
+  //         console.log("File Menu")
+  //         createWindow()
+  //       }},
+  //       { role: 'close'},
+  //       { type: "separator" },
+  //       { role: "quit" },
+  //     ]
+  //   },
+  //   { role: "editMenu" },
+  //   { role: "viewMenu" },
+  //   { role: "windowMenu" },
+  //   {
+  //     label: "Help",
+  //     submenu: [
+  //       { role: "about" },
+  //       { type: "separator" },
+  //       { role: "reload" },
+  //       { role: "zoomIn" },
+  //       { role: "zoomOut" },
+  //     ]
+  //   }
+  // ];
   let menuTemp: Electron.MenuItemConstructorOptions[] = [
     {
       label: "File",
       submenu: [
-        { label: "New", click: () => {
-          console.log("New Menu");
+        {label: "New", click: () => {
+          console.log("New menu");
           createWindow();
         }},
-        { label: "File", click: () => {
-          console.log("File Menu")
-          createWindow()
+        {label: "Hello", click: () => {
+          console.log("Hello menu.");
+          const w = BrowserWindow.getFocusedWindow();
+          w?.webContents.executeJavaScript('hello()');
         }},
-        { role: 'close'},
-        { type: "separator" },
-        { role: "quit" },
+        {role: "close"},
+        {type: "separator"},
+        {role: "quit"}
       ]
     },
-    { role: "editMenu" },
-    { role: "viewMenu" },
-    { role: "windowMenu" },
-    {
-      label: "Help",
-      submenu: [
-        { role: "about" },
-        { type: "separator" },
-        { role: "reload" },
-        { role: "zoomIn" },
-        { role: "zoomOut" },
-      ]
-    }
-  ];
+    {role: "editMenu"}
+  ]
   let menu = Menu.buildFromTemplate(menuTemp);
 
   Menu.setApplicationMenu(menu)

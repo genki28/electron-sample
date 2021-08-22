@@ -33,29 +33,51 @@
     // const { remote } = require("electron");
     // const { BrowserWindow } = remote;
     const BrowserWindow = window.remote.BrowserWindow;
-    console.log(BrowserWindow)
+    const Menu = window.remote.Menu;
     function doit () {
-      let win = new BrowserWindow({
-        width: 400,
-        height: 300,
-      });
-      win.loadFile("index.html");
-
-      let n = 100;
-      let res = '';
-      let wins = BrowserWindow.getAllWindows();
-      for (let w in wins) {
-        res += '[' + wins[w].id + ']<br>';
-        wins[w].setPosition(n, n);
-        n += 50;
-      }
-      document.querySelector("#msg").innerHTML = res;
-    }
-
-    function openWeb () {
       let win = remote.getCurrentWindow();
-      win.webContents.loadURL("https://electronjs.org")
+      let menu_temp = [
+        {
+          label: "New Menu",
+          submenu: [
+            {label: "Hello", click: () => {
+              hello();
+            }},
+            {role: "close"},
+            {type: "separator"},
+            {role: "quit"}
+          ]
+        }
+      ];
+      let menu = Menu.buildFromTemplate(menu_temp);
+      Menu.setApplicationMenu(menu);
+      alert("Change menubar.")
     }
+    function hello () {
+      alert("select menu " + remote.getCurrentWindow().id)
+    }
+    // function doit () {
+    //   let win = new BrowserWindow({
+    //     width: 400,
+    //     height: 300,
+    //   });
+    //   win.loadFile("index.html");
+
+    //   let n = 100;
+    //   let res = '';
+    //   let wins = BrowserWindow.getAllWindows();
+    //   for (let w in wins) {
+    //     res += '[' + wins[w].id + ']<br>';
+    //     wins[w].setPosition(n, n);
+    //     n += 50;
+    //   }
+    //   document.querySelector("#msg").innerHTML = res;
+    // }
+
+    // function openWeb () {
+    //   let win = remote.getCurrentWindow();
+    //   win.webContents.loadURL("https://electronjs.org")
+    // }
   </script>
 </body>
 </html>

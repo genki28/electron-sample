@@ -203,36 +203,56 @@ var createMenu = function () {
     // });
     // menu.append(edit);
     // Menu.setApplicationMenu(menu)
+    // let menuTemp: Electron.MenuItemConstructorOptions[] = [
+    //   {
+    //     label: "File",
+    //     submenu: [
+    //       { label: "New", click: () => {
+    //         console.log("New Menu");
+    //         createWindow();
+    //       }},
+    //       { label: "File", click: () => {
+    //         console.log("File Menu")
+    //         createWindow()
+    //       }},
+    //       { role: 'close'},
+    //       { type: "separator" },
+    //       { role: "quit" },
+    //     ]
+    //   },
+    //   { role: "editMenu" },
+    //   { role: "viewMenu" },
+    //   { role: "windowMenu" },
+    //   {
+    //     label: "Help",
+    //     submenu: [
+    //       { role: "about" },
+    //       { type: "separator" },
+    //       { role: "reload" },
+    //       { role: "zoomIn" },
+    //       { role: "zoomOut" },
+    //     ]
+    //   }
+    // ];
     var menuTemp = [
         {
             label: "File",
             submenu: [
                 { label: "New", click: function () {
-                        console.log("New Menu");
+                        console.log("New menu");
                         createWindow();
                     } },
-                { label: "File", click: function () {
-                        console.log("File Menu");
-                        createWindow();
+                { label: "Hello", click: function () {
+                        console.log("Hello menu.");
+                        var w = electron_1.BrowserWindow.getFocusedWindow();
+                        w === null || w === void 0 ? void 0 : w.webContents.executeJavaScript('hello()');
                     } },
-                { role: 'close' },
+                { role: "close" },
                 { type: "separator" },
-                { role: "quit" },
+                { role: "quit" }
             ]
         },
-        { role: "editMenu" },
-        { role: "viewMenu" },
-        { role: "windowMenu" },
-        {
-            label: "Help",
-            submenu: [
-                { role: "about" },
-                { type: "separator" },
-                { role: "reload" },
-                { role: "zoomIn" },
-                { role: "zoomOut" },
-            ]
-        }
+        { role: "editMenu" }
     ];
     var menu = electron_1.Menu.buildFromTemplate(menuTemp);
     electron_1.Menu.setApplicationMenu(menu);
