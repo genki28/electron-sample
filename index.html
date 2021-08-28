@@ -45,8 +45,38 @@
     const ipcRenderer = window.ipcRenderer;
     const dialog = window.dialog;
     const fs = window.fs;
+    const https = window.https;
+    const sqlite3 = window.sqlite3;
+    const path = window.path;
+    const dirname = window.dirname;
+
+    var dbpath = path.join(dirname, "mydata.db");
+    // var db = new sqlite3.Database(dbpath);
+
+    makeTable();
+    function makeTable () {
+      findall().then((res) => {
+        let msg = document.querySelector("#msg");
+        msg.innerHTML = jsonToTable(res);
+      })
+    }
 
     function doit() {
+      let ta = document.querySelector("#ta");
+      let data = ta.value.split(',');
+      addUser(data).then((res) => {
+        alert(res);
+        ta.value = "";
+      })
+      // let db = new sqlite3.Database(dbpath);
+      // db.serialize(() => {
+      //   const query = "create table if not exists users"
+      //     + " {id integer primary key autoincrement,"
+      //     + " name text not null, mail text, tel text";
+      //     db.run(query)
+      //     alert("create!!")
+      // })
+      // db.close();
       // TODO
       // let fname = "sample.txt";
       // // re = fs.readFileSync(fname).toString();
@@ -96,23 +126,36 @@
       // }
       // document.querySelector("#ta").value = re;
 
-      let data = document.querySelector("#ta").value;
-      let w = remote.getCurrentWindow();
-      let fpath = dialog.showSaveDialogSync(w, {
-        title: "保存ダイアログ",
-        message: "ファイル名を入力"
-      });
-      if (fpath != null) {
-        fs.writeFile(fpath + ".txt", data, (err) => {
-          if (err == null) {
-            alert("保存しました")
-          } else {
-            dialog.showErrorBox(err.code + err.errno, err.message)
-          }
-        })
-      } else {
-        alert("キャンセルされました")
-      }
+      // let data = document.querySelector("#ta").value;
+      // let w = remote.getCurrentWindow();
+      // let fpath = dialog.showSaveDialogSync(w, {
+      //   title: "保存ダイアログ",
+      //   message: "ファイル名を入力"
+      // });
+      // if (fpath != null) {
+      //   fs.writeFile(fpath + ".txt", data, (err) => {
+      //     if (err == null) {
+      //       alert("保存しました")
+      //     } else {
+      //       dialog.showErrorBox(err.code + err.errno, err.message)
+      //     }
+      //   })
+      // } else {
+      //   alert("キャンセルされました")
+      // }
+      // let url = "http://localhost:7077/test";
+      // let msg = document.querySelector("#msg");
+      // https.get(url, (res) => {
+      //   let data = "";
+      //   res.setEncoding("utf8");
+      //   res.on("data", (ck) => {
+      //     data += ck
+      //   })
+      //   res.on("end", (re) => {
+      //     let jsonObj = JSON.parse(data);
+      //     msg.innerHTML = jsonToTable(jsonObj);
+      //   })
+      // })
     //   fs.writeFile("saved.txt", data, (err) => {
     //     if (err == null) {
     //       alert("保存しました。")
@@ -121,6 +164,27 @@
     //     }
     //   })
     }
+
+    // function jsonToTable(json) {
+    //   let table = '<table class="table"><thead><tr><th></th>';
+    //   for (let ky in json) {
+    //     let ob = json[ky];
+    //     for (let ky2 in ob) {
+    //       table += "<ht>" + ky2 + "</ht>";
+    //     }
+    //     break;
+    //   }
+    //   table += "</tr></thead><tbody>";
+    //   for (let ky in json) {
+    //     table += "<tr><td>" + ky + "</td>";
+    //     let ob = json[ky];
+    //     for (let ky2 in ob) {
+    //       table += "<td>" + ob[ky2] + "</td>";
+    //     }
+    //     table += "</tr>";
+    //   }
+    //   table += "</tbody></table>"
+    // }
 
     // ipcRenderer.on("hello", (event, msg) => {
     //   console.log("message hello from app. :" + msg);
@@ -238,6 +302,40 @@
     //   let win = remote.getCurrentWindow();
     //   win.webContents.loadURL("https://electronjs.org")
     // }
+    function addUser(data) {
+      return new Promise((resolve, reject) => {
+        let db = new sqlite3.Database(dbpath);
+        db.serialize(() => {
+          let query = "insert into users (name, mail, tel) values "
+            + '("' + data[0] + '","' + data[1] + '","' + data[2] + '")"';
+          db.exec(query, (stat, err) => {
+            if (err == null) {
+              resolve('SUCCESS');
+            } else {
+              reject(err);
+            }
+          });
+        });
+        db.close()
+      });
+    }
+
+    function findall() {
+      let query = "select * from users";
+      return new Promise((resolve, reject) => {
+        let db = new sqlite3.Database(dbpath);
+        db.all(query, (err, rows) => {
+          if (err == null) {
+            resolve(rows);
+          } else {
+            reject(err)
+          }
+        });
+        db.close();
+      }).catch((err) => {
+        alert(err.message);
+      })
+    }
   </script>
 </body>
 </html>
