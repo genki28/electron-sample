@@ -19,31 +19,115 @@
   </nav>
   <div class="container">
     <p id="msg">please click button.</p>
+    <p>
+      <textarea class="form-control" id="ta"></textarea>
+    </p>
+    <button class="btn btn-primary" onclick="doit()">
+      Click
+    </button>
     <!-- <p>
       <textarea class="form-control" id="ta"></textarea>
     </p> -->
-    <button class="btn btn-primary" onclick="doit()">
+    <!-- <button class="btn btn-primary" onclick="doit()">
       Click
     </button>
     <button class="btn btn-primary" onclick="openWeb()">
       Open Electron
-    </button>
+    </button> -->
   </div>
   <script>
     // const { remote } = require("electron");
     // const { BrowserWindow } = remote;
-    const BrowserWindow = window.remote.BrowserWindow;
-    const Menu = window.remote.Menu;
+    const remote = window.remote
+    const BrowserWindow = remote.BrowserWindow;
+    const Menu = remote.Menu;
     const MenuItem = window.MenuItem;
     const ipcRenderer = window.ipcRenderer;
     const dialog = window.dialog;
+    const fs = window.fs;
+
+    function doit() {
+      // TODO
+      // let fname = "sample.txt";
+      // // re = fs.readFileSync(fname).toString();
+      // // document.querySelector("#ta").value = re;
+      // // alert("テキストを読み込みました。")
+      // let re = fs.readFile(fname, (err, result) => {
+      //   if (err == null) {
+      //     let data = result.toString();
+      //     document.querySelector("#ta").value = data;
+      //     alert("テキストを読み込みました。")
+      //   } else {
+      //     dialog.showErrorBox(err.code + err.errno, err.message)
+      //   }
+      // })
+      // let w = remote.getCurrentWindow();
+      // dialog.showOpenDialog(w, {
+      //   properties: ["openFile"],
+      //   filters: [
+      //     { name: "Text Files", extensions: ["txt"] },
+      //     { name: "All Files", extensions: ["*"] }
+      //   ]
+      // }).then((result) => {
+      //   if (!result.canceled) {
+      //     var re = "";
+      //     let pth = result.filePaths[0];
+      //     re = fs.readFileSync(pth).toString();
+      //   } else {
+      //     re = "canceled";
+      //   }
+      //   document.querySelector("#ta").value = re;
+      // }).catch(err => {
+      //   dialog.showErrorBox(err.code + err.errno, err.message);
+      // })
+      // let result = dialog.showOpenDialogSync(w, {
+      //   properties: ["openFile"],
+      //   filters: [
+      //     { name: "Text Files", extensions: ["txt"] },
+      //     { name: "All Files", extensions: ["*"] }
+      //   ]
+      // });
+      // if (result != undefined) {
+      //   var re = "";
+      //   let pth = result[0];
+      //   re = fs.readFileSync(pth).toString();
+      // } else {
+      //   re = "canceled"
+      // }
+      // document.querySelector("#ta").value = re;
+
+      let data = document.querySelector("#ta").value;
+      let w = remote.getCurrentWindow();
+      let fpath = dialog.showSaveDialogSync(w, {
+        title: "保存ダイアログ",
+        message: "ファイル名を入力"
+      });
+      if (fpath != null) {
+        fs.writeFile(fpath + ".txt", data, (err) => {
+          if (err == null) {
+            alert("保存しました")
+          } else {
+            dialog.showErrorBox(err.code + err.errno, err.message)
+          }
+        })
+      } else {
+        alert("キャンセルされました")
+      }
+    //   fs.writeFile("saved.txt", data, (err) => {
+    //     if (err == null) {
+    //       alert("保存しました。")
+    //     } else {
+    //       dialog.showErrorBox(err.code + err.errno, err.message);
+    //     }
+    //   })
+    }
 
     // ipcRenderer.on("hello", (event, msg) => {
     //   console.log("message hello from app. :" + msg);
     //   document.querySelector("#msg").textContent = msg;
     // })
 
-    function doit () {
+    // function doit () {
       // let w = remote.getCurrentWindow();
       // ipcRenderer.send("hello");
 
@@ -54,7 +138,7 @@
       // ipcRenderer.invoke("hello", w.id).then((result) => {
       //   document.querySelector("#msg").textContent = result;
       // })
-      let w = remote.getCurrentWindow();
+      // let w = remote.getCurrentWindow();
       // OKとcancelとかよく用いられるやつがボタンになり、他はリンクになるみたいだが・・・。
       // TODO: macだとそうならないっぽい？？
       // let btns = ["OK", "Cancel", "わかりました。", "よくわからない・・・"];
@@ -81,20 +165,20 @@
       //     document.querySelector("#msg").textContent = msg;
       //   }
       // })
-      let btns = ["正常です", "問題があります"];
-      dialog.showMessageBox(w, {
-        type: "info",
-        title: "Message",
-        message: "アプリケーションの動作に問題はないですか。",
-        buttons: btns
-      }).then((event) => {
-        if (event.response == 1) {
-          dialog.showErrorBox("Caution!", "何か問題が発生しています。")
-        } else [
-          alert("了解しました。")
-        ]
-      })
-    }
+      // let btns = ["正常です", "問題があります"];
+      // dialog.showMessageBox(w, {
+      //   type: "info",
+      //   title: "Message",
+      //   message: "アプリケーションの動作に問題はないですか。",
+      //   buttons: btns
+      // }).then((event) => {
+      //   if (event.response == 1) {
+      //     dialog.showErrorBox("Caution!", "何か問題が発生しています。")
+      //   } else [
+      //     alert("了解しました。")
+      //   ]
+      // })
+    // }
 
     // const menu = new Menu();
     // menu.append(new MenuItem({
